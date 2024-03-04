@@ -119,70 +119,142 @@ else {
  }
 }
 }
-//create var that handles retvar
+function checkTeacherId($teacherid){
 
-function getSession(){
+    $con = $this->DBlogin();
+
+    if(!$con){
+
+        return false;
+    }
+
+    $query = "SELECT PROF_ID FROM prof WHERE  PROF_ID = '$teacherid'";
+
+    $result = $con->query($query);
+
+    if( mysqli_num_rows($result) >0){
+return true;
+    }
+    else {
+
+        return false;
+    }
+    return false;
+}
+
+function SaveTeacher($id,$firstname,$middlename,$lastname,$gender,$username,$password){
+
+$password = $this->ENCRYPT($password);
+
+
+$con = $this->DBlogin();
+if(!$con){
+
+    return false;
+}
+else {
+
+    $this->table = 'prof';
+
+    $query = 'insert into ' . $this->table . ' (PROF_ID,FIRSTNAME,MIDDLENAME,LASTNAME,GENDER,USERNAME,PASSWD) values ("'.$id.'"
+    ,"'.$firstname.'","'.$middlename.'", "'.$lastname.'","'.$gender.'","'.$username.'","'.$password.'")';
+
+
+
+
+if(!$con->query($query)){
+
+    return false;
+    echo 'e';
+}
+else {
+return true;
+}
+
+}
+}
+
+
+
+//get session function
+//create a variable assign md5 and rankey
+//use the variable and assign usr_ 
+//return the variable
+
+function getsession(){
 
     $retvar = md5($this->randkey);
-    $retvar = 'usr_'.substr($retvar,0,10);
+
+    $retvar = 'usr-'.substr($retvar,0,10);
+
     return $retvar;
 }
 
 
-//check ig no session if no start session
-//assign sessioncode to session variable
-//check if empty if ytes retuen false otehrwise return truyel
-function checkLogin(){
+
+//checklogin function
+//check if no session if no start session
+//assign getsession function to session variable
+//check if the session variable  is empty  if yes return false otehrwise return true
+
+
+
+function checklogin(){
 
 
     if(!isset($_SESSION)){
-        session_start();
+
+session_start();
     }
 
-    $sessionvar = $this->getSession();
+
+    $sessionvar = $this->getsession();
+
 
     if(empty($_SESSION[$sessionvar])){
+
+
         return false;
     }
     return true;
 }
 
 
-
-
+//checkloginDB --function
+// assign variable for parameter
 //establish connection
 //sanitize user and pass
 //query
 //result
-//condition check the result and return false
-//fetchasoc
-//create session that pass the username
+//condition check the result if <= 0 if true echo error messagereturn false
+//assign variable to mysqli fetch and set the result var as parameter
+//create session that pass the username to the asssign variable row 
 //return true
+function checkloginDB($username , $password){
 
-
-function checkLoginInDB($username,$password){
-
-    $con = $this -> DBlogin();
+    $con = $this->DBlogin();
 
     $username = $this->sanitize($username);
-    $pass = $this->ENCRYPT($this->sanitize($password));
+    $password = $this->ENCRYPT($this->sanitize($password));
 
-    $query = "select * from users where USERNAME = '$username' and PASSWD = '$pass'";
+    $query = "select * from users where USERNAME = '$username' and PASSWD = '$password'";
 
     $result = $con->query($query);
 
 
     if(!$result || mysqli_num_rows($result)<=0){
-        echo 'ERROR LOGGING IN INVALID USER AND PASS IDIOT';
-        return false;
+      //  echo '<script>alert("ERROR: Username and password incorrect.");</script>';
+return false;
     }
-
    $row = mysqli_fetch_assoc($result);
 
-   $_SESSION ['username'] = $row ['USERNAME'];
-   return true;
-
+    $_SESSION['username'] = $row['USERNAME'];
+    return true;
 }
+//teacer
+
+
+
 
 //login naaa
 //get the username and password and trim
@@ -191,29 +263,70 @@ function checkLoginInDB($username,$password){
 //create session use getsession and assign to username
 //return true
 
-
 function login(){
 
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
 
 
-    if(!isset($_SESSION)){
+    if (!isset($_SESSION)){
 
         session_start();
     }
 
-    if(!$this->checkLoginInDB($username,$password)){
+    if(!$this->checkloginDB($username,$password)){
+
         return false;
     }
 
-    $_SESSION[$this->getSession()] = $username;
+    $_SESSION [$this->getsession()] = $username;
 
     return true;
 }
 
 
+//TEACHER LOGIN 
+function checkloginDBinTeacher($username , $password){
+
+    $con = $this->DBlogin();
+
+    $username = $this->sanitize($username);
+    $password = $this->ENCRYPT($this->sanitize($password));
+
+    $query = "select * from prof where USERNAME = '$username' and PASSWD = '$password'";
+
+    $result = $con->query($query);
+
+
+    if(!$result || mysqli_num_rows($result)<=0){
+      //  echo '<script>alert("ERROR: Username and password incorrect.");</script>';
+return false;
+    }
+   $row = mysqli_fetch_assoc($result);
+
+    $_SESSION['username'] = $row['USERNAME'];
+    return true;
 }
 
+function loginTeacher(){
 
+    $username = trim($_POST['username']);
+    $password = trim($_POST['password']);
+
+
+    if (!isset($_SESSION)){
+
+        session_start();
+    }
+
+    if(!$this->checkloginDBinTeacher($username,$password)){
+
+        return false;
+    }
+
+    $_SESSION [$this->getsession()] = $username;
+
+    return true;
+}
+}
 ?>

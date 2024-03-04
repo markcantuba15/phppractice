@@ -52,19 +52,13 @@
     </style>
 </head>
 <body>
-<div class="navbar">
 
-  <a href="#about">About</a>
-  <a href="#services">Services</a>
-  <a href="#contact">Contact</a>
-  <a href="#home">Home</a>
-</div>
 
 <br><br><br>
 
 <div class="navbar1">
     <br><br>
-  <a href="adminfile/addTeacherAccount.php">AddTeacher</a>
+  <a href="addStudent.php">addStudent</a>
   <a href="#about">About</a>
   <a href="#services">Services</a>
   <a href="#contact">Contact</a>

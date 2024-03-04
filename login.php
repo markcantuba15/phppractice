@@ -21,12 +21,19 @@ require_once("include/connection.php");
     if(isset($_POST['submit'])){
 
     if($fc->login()==true){
-
-
-        echo 'logine';
+       header("Location:main.php");
+       exit;
     }
+   else if($fc->loginTeacher()==true){
+    header("Location:teacherfile/mainteacher.php");
+   exit;
     }
     else {
+        echo '<script>alert("ERROR: Username and password incorrect.");</script>';
+    }
+}
+    
+   
 ?>
 
     
@@ -53,5 +60,3 @@ require_once("include/connection.php");
 </html>
 <?php
 
-}
- ?>

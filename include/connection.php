@@ -1,6 +1,6 @@
 <?php 
 
-require_once("include/function.php");
+require_once(dirname(__FILE__) . '/../include/function.php');
 
 
 $fc = new Functions();
